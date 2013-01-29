@@ -8,7 +8,7 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script>
             globalAlpha = 1;
-            pixelSize = 18; //5
+            pixelSize = 10; //5
             pixelCount = 50; //1
             coordinateRounding = 20; //10
             randomX = 0;
@@ -43,7 +43,7 @@
                 c.addEventListener("mousedown", globalDim, false);
 
                 var then = Date.now();
-                setInterval(main, 1); // Execute as fast as possible
+                setInterval(main, 10); // Execute as fast as possible
             }
 
             var main = function () {         
