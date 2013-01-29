@@ -9,7 +9,7 @@
         <script>
             globalAlpha = 1;
             pixelSize = 10; //5
-            pixelCount = 50; //1
+            pixelCount = 10; //1
             coordinateRounding = 20; //10
             randomX = 0;
             randomY = 0;
@@ -43,7 +43,7 @@
                 c.addEventListener("mousedown", globalDim, false);
 
                 var then = Date.now();
-                setInterval(main, 10); // Execute as fast as possible
+                setInterval(main, 50); // Execute as fast as possible
             }
 
             var main = function () {         
