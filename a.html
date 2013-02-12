@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>XO</title>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="style.css" media="all">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script>
+            counter = 0;
+            counterViive = 0;
+            addViive = 0;
+            fadeViive = 0;
+            drawViive = 0;
+
+            pixelCursor = 0;
+            arraySize = 100;
+            pixelCoordinatesX = new Array();
+            pixelCoordinatesY = new Array();
+            pixelAlphas = new Array();
+            pixelFadeInOut = new Array();
+
+            pixelSize = 5;
+            alphaIncrease = 0.05;
+            alphaReduction = 0.01;
+            coordinateRounding = 20;
+
+            window.onload = function () {
+                init();
+                c = document.getElementById("canvasArea");
+                ctx = c.getContext("2d");
+                theFunction();
+            }
+            window.onresize = function () {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                canvasWidth = document.width;
+                canvasHeight = document.height;
+
+                APP.core.render();
+            }
+
+            function init() {
+                canvas = document.getElementById("canvasArea");
+                canvas.width = document.width;
+                canvas.height = document.height;
+                canvasWidth = document.width;
+                canvasHeight = document.height;
+            }
+            function theFunction(){
+                window.APP = window.APP || {};
+                 
+                APP.pause = function() {
+                    window.cancelAnimationFrame(APP.core.animationFrame);
+                };
+                 
+                APP.play = function() {
+                    APP.core.then = Date.now();
+                    APP.core.frame();
+                };
+                 
+                 
+                APP.core = {
+                 
+                    frame: function() {
+                        APP.core.setDelta();
+                        APP.core.update();
+                        APP.core.render();
+                        APP.core.animationFrame = window.requestAnimationFrame(APP.core.frame);
+                    },
+                 
+                    setDelta: function() {
+                        APP.core.now = Date.now();
+                        APP.core.delta = (APP.core.now - APP.core.then) / 1000; // seconds since last frame
+                        APP.core.then = APP.core.now;
+           //             console.log(viive);
+                    },
+                 
+                    update: function() {
+                        // Render updates to browser (draw to canvas, update css, etc.)
+                        document.getElementById("counter").textContent = counter;
+                    },
+                 
+                    render: function() {
+                        ctx.fillStyle = "#182838";
+                        ctx.fillRect (0, 0, canvasWidth, canvasHeight);
+                        for (var i = 0; i < pixelCoordinatesX.length; i++) {
+                            drawTuikku( pixelCoordinatesX[i],
+                                        pixelCoordinatesY[i],
+                                        pixelAlphas[i]);
+                            
+                        };
+                        
+                        if( fadeViive > 0.01 ) {
+                            for (var i = 0; i < pixelCoordinatesX.length; i++) {
+                                if (pixelFadeInOut[i] == 1){
+                                    if (pixelAlphas[i] < 1.00) {
+                                        pixelAlphas[i] += alphaIncrease;   
+                                    } else {
+                                        pixelFadeInOut[i] = 0;
+                                    }
+                                } else {
+                                    if (pixelAlphas[i] >= 0) {
+                                        pixelAlphas[i] -= alphaReduction;
+                                    } else {
+                                        pixelAlphas[i] = 0;
+                                    }
+                                } 
+                            }
+                            fadeViive = 0;
+                        } else {
+                            fadeViive += APP.core.delta;
+                        }
+
+                        if( addViive > 0.05 ) {
+                            addTuikku();
+                            addViive = 0;
+                        } else {
+                            addViive += APP.core.delta;
+                        }
+
+                        // if( counterViive > 1 ) {
+                        //     counter++;
+                        //     counterViive = 0;
+                        // } else {
+                        //     counterViive += APP.core.delta;
+                        // }
+                    }
+                };
+                 
+                APP.play();
+
+                function drawTuikku(X, Y, A){
+                    ctx.fillStyle = "rgba(255,255,255," + A + ")";
+                   // ctx.fillStyle = "rgba(255,255,255,1";
+                    ctx.fillRect(X, Y, pixelSize, pixelSize);
+
+                }
+
+                function addTuikku(){
+                    if (pixelCursor >= arraySize) pixelCursor = 0;  //aloitetaan alusta
+                    pixelCoordinatesX[pixelCursor] = roundToNearest(
+                                                     coordinateRounding,
+                                                     1+(Math.random()*(canvasWidth-pixelSize))
+                                                     );
+                    pixelCoordinatesY[pixelCursor] = roundToNearest(
+                                                     coordinateRounding,
+                                                     1+(Math.random()*(canvasWidth-pixelSize))
+                                                     );;
+                    pixelAlphas[pixelCursor] = 0;
+                    // fadein = 1 , fadeout = 0
+                    pixelFadeInOut[pixelCursor] = 1;
+                    pixelCursor++;
+                }
+
+                function roundToNearest(toNearest,valueToRound){
+                    var canvas = document.getElementById("gameArea");
+                    return (toNearest * Math.round(valueToRound / toNearest));
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="canvasArea"></canvas>
+        <div id="counter"></div>
+    </body>
+</html>
