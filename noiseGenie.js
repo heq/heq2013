@@ -219,7 +219,7 @@ function randomPlinkTime() {
     return plinkTimeMin + ( Math.random() * plinkTimeMax );
 }
 function randomAlpha() {
-    return alphaMin + ( Math.random() * alphaMax );
+    return alphaMin + ( Math.random() * (alphaMax - alphaMin));
 }
 function roundToNearest(toNearest,valueToRound) {
     return (toNearest * Math.round(valueToRound / toNearest));
