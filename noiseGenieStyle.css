@@ -49,9 +49,12 @@
     font-weight: normal;
     font-style: normal;
 }
+body {
+    background-color: #EEE;
+}
 
 #titleText {
-    margin-top: 180px;
+    margin-top: 120px;
     font-size: 5em;
     color: rgba(196,72,128, 1);
     font-family: "GondolaSDRegular", Arial, sans-serif;
@@ -77,13 +80,14 @@ canvas {
     z-index: 1;
 }
 #a_a {
-    background-image: url('genieSprite.png');
+    background-image: url('genieSprite_600.png');
     background-repeat: no-repeat;
-    height: 350px;
+    height: 300px;
     margin-bottom: -20px;
+    margin-left: -36px;
 }
 #b {
-    margin-top: -20px;
+    margin-top: -30px;
 }
 #b_a {
     margin: 0 auto;
@@ -91,10 +95,18 @@ canvas {
     vertical-align: middle;
     height: 400px;
     width: 400px;
-    background-color: rgba(128,96,56, 0.5);
+
+    background-color: #ffffff;
+
+    -moz-box-shadow:    inset 0 0 15px rgba(0,0,0, 0.5);
+    -webkit-box-shadow: inset 0 0 15px rgba(0,0,0, 0.5);
+    box-shadow:         inset 0 0 15px rgba(0,0,0, 0.5);
 }
 #b_b {
-    margin-top: 40px;
+    margin-top: 12px;
+}
+#canvasArea {
+
 }
 
 /* -------------- table reset ------------- */
@@ -127,14 +139,18 @@ td.table_header {
     font-weight: bold;
     text-align: right !important;
 }
-td.table_value {
-
+tr#color td.table_value {
+    //asd
 }
 .input-append {
     width: 70px;
     margin: 0 0 0 0 !important;
     padding: 0 0 0 0 !important;
     border: 0 0 0 0 !important;
+    white-space: normal !important;
+}
+.input-prepend {
+    width: 150px;
     white-space: normal !important;
 }
 td.table_hint {
@@ -145,4 +161,8 @@ td.table_hint {
 }
 td.table_buttons {
     text-align: center
+}
+
+#colorBlock {
+    min-width: 20px;
 }

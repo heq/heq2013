@@ -6,6 +6,11 @@ var alphaMin = 0.2;
 var alphaMax = 0.8;
 var sizeX = 350;
 var sizeY = 350;
+var colorRGB = "";
+var colorR = 0;
+var colorG = 0;
+var colorB = 0;
+
 var bgAlpha = 0;
 var plinkTimeMin = 2000;
 var plinkTimeMax = 10000;
@@ -13,6 +18,8 @@ var eyesClosed = false;
 
 var yesBox = 0;
 var noBox = 0;
+var colorPattern = /^([a-fA-F\d]){3}|([a-fA-F\d]){6}$/;
+var validKeys = /^([4][8-9]|[5][0-7]|[6][5-9]|[7][0]|[9][6-9]|[1][0][0-5])$/;
 
 window.onload = function () {
     canvas = document.getElementById("canvasArea");
@@ -27,7 +34,6 @@ window.onload = function () {
 
 function plinkTimer() {
     plinkTime = randomPlinkTime();
-    console.log("TIMER "+plinkTime);
     setTimeout(function(){ plinkAction() }, randomPlinkTime());
 }
 function plinkAction(){
@@ -38,12 +44,10 @@ function plinkAction(){
 }
 function doPlink() {
     if (eyesClosed) {
-        console.log("*closed*");
         genie.style.backgroundPosition = (0)+"px "+(0)+"px";
         eyesClosed = false;
     } else {
-        console.log("*open*");
-        genie.style.backgroundPosition = (0)+"px "+(-350)+"px";
+        genie.style.backgroundPosition = (0)+"px "+(-300)+"px";
         eyesClosed = true;
     }
 } 
@@ -57,6 +61,23 @@ $(document).ready(function() {
         $("#btnSave").on('click', function() {
             console.log("SAVE");
             openInWindow();
+        });
+        $("input").click(function() { $(this).select(); } );
+        $(".container").keypress(function(e) {
+          if (e.keyCode == 13) {
+            getSettings();
+            draw();
+            }
+        });
+        $("#colorValue").keyup( function(e) {
+            var theKey = e.keyCode;
+            console.log("DERP " +theKey );
+            if ( validateKey(theKey) ) {
+                if ( validateHex( String($('#colorValue').val()) ) ) {
+                    getSettings();
+                    draw();
+                }
+            }
         });
 });
 
@@ -132,6 +153,16 @@ function getSettings() {
         $('canvas').css({top: ((sizeY-30)/2) + "px"});
         $('canvas').css({marginTop: (-sizeY) + "px" });
     }
+//color
+    help = String($('#colorValue').val());
+    console.log("colorValue["+help.length+"] "+help+" "+colorPattern.test(help));
+
+    //pelkkä colorPattern.test(help) ei riitä?
+    if( validateHex(help) ) {
+        colorRGB = help;
+        $('#colorBlock').css({backgroundColor: "#" + colorRGB});
+        hexTo10(colorRGB);
+    }
 }
 
 function openInWindow() {
@@ -175,10 +206,34 @@ function drawDots() {
         }
     }
 }
+function hexTo10(s) {
+    if (s.length == 3) {
+        colorR = String( colorRGB.charAt(0).concat(colorRGB.charAt(0)));
+        colorG = String( colorRGB.charAt(1).concat(colorRGB.charAt(1)));
+        colorB = String( colorRGB.charAt(2).concat(colorRGB.charAt(2)));
+        colorRGB = colorR.concat(colorG.concat(colorB));
+    }
+    colorR = parseInt( parseInt(colorRGB.charAt(0), 16)*16 + parseInt(colorRGB.charAt(1), 16));
+    colorG = parseInt( parseInt(colorRGB.charAt(2), 16)*16 + parseInt(colorRGB.charAt(3), 16));
+    colorB = parseInt( parseInt(colorRGB.charAt(4), 16)*16 + parseInt(colorRGB.charAt(5), 16));
+    console.log("hexTo10 : "+colorRGB);
+}
+function validateHex(h) {
+    if (colorPattern.test(h) && (h.length == 3 || h.length == 6)) {
+        return true;
+    }
+    return false;
+}
+function validateKey(k) {
+    if (validKeys.test(k)) {
+        return true;
+    }
+    return false;
+}
 
 function drawBox(X, Y){
     if(randomEmpty()) {return;}
-    ctx.fillStyle = "rgba(0, 0, 0, " + randomAlpha() + ")";
+    ctx.fillStyle = "rgba(" +colorR+ "," +colorG+ "," +colorB+ "," +randomAlpha()+ ")";
     ctx.fillRect(X, Y, boxSize, boxSize);
 }
 
@@ -219,6 +274,9 @@ function randomPlinkTime() {
     return plinkTimeMin + ( Math.random() * plinkTimeMax );
 }
 function randomAlpha() {
+    if (alphaMin >= alphaMax) {
+        return alphaMin;
+    }
     return alphaMin + ( Math.random() * (alphaMax - alphaMin));
 }
 function roundToNearest(toNearest,valueToRound) {
